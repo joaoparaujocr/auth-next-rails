@@ -9,14 +9,17 @@ class Users::RegistrationsController < Devise::RegistrationsController
         status: {
           code: 200,
           message: "Signed up successfully.",
+        },
+        data: {
           token: current_token,
-          data: { user: resource }
+          user: UserSerializer.new(resource).serializable_hash[:data][:attributes]
         }
       }, status: :ok
     else
       render json: {
         status: {
-          message: "User couldn't be created successfully. #{resource.errors.full_messages.to_sentence}"
+          message: "User couldn't be created successfully. #{resource.errors.full_messages.to_sentence}",
+          code: 422
         }
       }, status: :unprocessable_entity
     end

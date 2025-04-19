@@ -10,17 +10,14 @@ RSpec.describe "User signup", type: :request do
     expect(response.body).to include_json(
       status: {
         code: 200,
-        message: "Signed up successfully.",
+        message: "Signed up successfully."
+      },
+      data: {
         token: be_a(String),
-        data: {
-          user: {
-            id: be_a(Integer),
-            email: user_attrs[:email],
-            name: user_attrs[:name],
-            created_at: be_a(String),
-            updated_at: be_a(String),
-            jti: be_a(String)
-          }
+        user: {
+          id: be_a(Integer),
+          email: user_attrs[:email],
+          name: user_attrs[:name]
         }
       }
     )
@@ -33,7 +30,8 @@ RSpec.describe "User signup", type: :request do
     expect(response).to have_http_status(:unprocessable_entity)
     expect(response.body).to include_json(
       status: {
-        message: be_a(String)
+        message: be_a(String),
+        code: 422
       }
     )
   end
