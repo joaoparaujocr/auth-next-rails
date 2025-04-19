@@ -7,7 +7,7 @@ module CurrentUserHelper
 
       return unless token
 
-      jwt_payload = JWT.decode(token, ENV['DEVISE_JWT_SECRET_KEY']).first
+      jwt_payload = JWT.decode(token, ENV["DEVISE_JWT_SECRET_KEY"]).first
       @current_user ||= User.find(jwt_payload["sub"].to_i)
     end
   rescue JWT::DecodeError
@@ -15,6 +15,6 @@ module CurrentUserHelper
   end
 
   def authenticate_user!
-    render json: { message: "Unauthorized", status: :unauthorized }, status: :unauthorized unless current_user
+    render json: { status: { message: "Unauthorized", code: 401 } }, status: :unauthorized unless current_user
   end
 end

@@ -23,4 +23,16 @@ RSpec.describe "/users/me", type: :request do
       }
     )
   end
+
+  it "should not be possible to access the me route without token" do
+    get '/users/me'
+
+    expect(response).to have_http_status(:unauthorized)
+    expect(JSON.parse(response.body)).to include_json(
+      status: {
+        code: 401,
+        message: 'Unauthorized'
+      }
+    )
+  end
 end
