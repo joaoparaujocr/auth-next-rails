@@ -2,7 +2,7 @@ class Users::SessionsController < Devise::SessionsController
   include CurrentUserHelper
 
   respond_to :json
-  before_action :authenticate_user!, only: [:destroy]
+  before_action :authenticate_user!, only: [ :destroy ]
 
   private
 
@@ -12,11 +12,11 @@ class Users::SessionsController < Devise::SessionsController
 
     render json: {
       status: {
-        code: 200, message: "Logged in successfully.",
+        code: 200, message: "Logged in successfully."
+      },
+      data: {
         token: @token,
-        data: {
-          user: UserSerializer.new(resource).serializable_hash[:data][:attributes]
-        }
+        user: UserSerializer.new(resource).serializable_hash[:data][:attributes]
       }
     }, status: :ok
   end

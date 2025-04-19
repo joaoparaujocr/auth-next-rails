@@ -8,7 +8,20 @@ RSpec.describe "User login", type: :request do
     post '/login', params: { user: { email: user_correct.email, password: user_correct.password } }
 
     expect(response).to have_http_status(:ok)
-    expect(JSON.parse(response.body)['status']).to have_key("token")
+    expect(response.body).to include_json(
+      status: {
+        code: 200,
+        message: 'Logged in successfully.'
+      },
+      data: {
+        token: be_a(String),
+        user: {
+          id: be_a(Integer),
+          email: user_correct.email,
+          name: user_correct.name
+        }
+      }
+    )
   end
 
   it "should be returns unauthorized with invalid credentials" do
