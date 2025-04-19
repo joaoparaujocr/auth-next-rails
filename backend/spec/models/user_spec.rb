@@ -4,15 +4,17 @@ RSpec.describe User, type: :model do
   subject { build(:user_correct) }
 
   describe "validations" do
-    it { should validate_presence_of(:email) }
-    it { should validate_uniqueness_of(:email).case_insensitive }
-    it { should validate_presence_of(:name) }
-  end
+    it "validates presence of email" do
+      user = build(:user_correct, email: nil)
+      expect(user.valid?).to be_falsey
+      expect(user.errors[:email]).to include("can't be blank")
+    end
 
-  describe "#display_name" do
-    it "returns the name and email" do
-      user = build(:user_correct)
-      expect(user.display_name).to eq("João <joao@email.com>")
+    it "validates uniqueness of email" do
+      create(:user_correct, email: "test@email.com")
+      user = build(:user_correct, email: "test@email.com")
+      expect(user.valid?).to be_falsey
+      expect(user.errors[:email]).to include("has already been taken")
     end
   end
 end

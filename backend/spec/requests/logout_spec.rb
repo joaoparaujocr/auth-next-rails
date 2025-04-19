@@ -5,7 +5,7 @@ RSpec.describe "User logout", type: :request do
 
   it "should be possible to log out" do
     post '/login', params: { user: { email: user_correct.email, password: user_correct.password } }
-    token = JSON.parse(response.body)['status']["token"]
+    token = JSON.parse(response.body)['data']["token"]
 
     delete '/logout', headers: { 'Authorization': "Bearer #{token}" }
 

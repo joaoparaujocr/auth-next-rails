@@ -6,7 +6,7 @@ RSpec.describe "/users/me", type: :request do
   it "should return information about the logged in user" do
     post '/login', params: { user: { email: user_correct.email, password: user_correct.password } }
 
-    token = JSON.parse(response.body)['status']['token']
+    token = JSON.parse(response.body)['data']['token']
 
     get '/users/me', headers: { 'Authorization': "Bearer #{token}" }
 
