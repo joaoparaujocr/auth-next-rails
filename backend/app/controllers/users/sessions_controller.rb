@@ -1,5 +1,6 @@
 class Users::SessionsController < Devise::SessionsController
   include CurrentUserHelper
+  include ActionController::Cookies
 
   respond_to :json
   before_action :authenticate_user!, only: [ :destroy ]
@@ -10,12 +11,19 @@ class Users::SessionsController < Devise::SessionsController
     @token = request.env["warden-jwt_auth.token"]
     headers["Authorization"] = @token
 
+    cookies[:token] = {
+        value: @token,
+        httponly: true,
+        secure: Rails.env.production?,
+        same_site: :lax,
+        path: "/"
+      }
+
     render json: {
       status: {
         code: 200, message: "Logged in successfully."
       },
       data: {
-        token: @token,
         user: UserSerializer.new(resource).serializable_hash[:data][:attributes]
       }
     }, status: :ok
@@ -23,6 +31,8 @@ class Users::SessionsController < Devise::SessionsController
 
   def respond_to_on_destroy
     if current_user
+      cookies.delete(:token)
+
       render json: {
         status: 200,
         message: "Logged out successfully."

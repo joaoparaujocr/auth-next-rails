@@ -1,15 +1,14 @@
 module CurrentUserHelper
   extend ActiveSupport::Concern
+  include ActionController::Cookies
 
   def current_user
-    if request.headers["Authorization"].present?
-      token = request.headers["Authorization"].split.last
+    token = cookies[:token]
 
-      return unless token
+    return unless token
 
-      jwt_payload = JWT.decode(token, ENV["DEVISE_JWT_SECRET_KEY"]).first
-      @current_user ||= User.find(jwt_payload["sub"].to_i)
-    end
+    jwt_payload = JWT.decode(token, ENV["DEVISE_JWT_SECRET_KEY"], true, algorithm: 'HS256').first
+    @current_user ||= User.find(jwt_payload["sub"].to_i)
   rescue JWT::DecodeError
     nil
   end

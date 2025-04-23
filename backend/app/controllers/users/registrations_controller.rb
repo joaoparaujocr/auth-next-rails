@@ -1,17 +1,26 @@
 class Users::RegistrationsController < Devise::RegistrationsController
+  include RackSessionsFix
+
   respond_to :json
 
   private
 
   def respond_with(resource, _opts = {})
     if resource.persisted?
+      cookies[:token] = {
+        value: current_token,
+        httponly: true,
+        secure: Rails.env.production?,
+        same_site: :lax,
+        path: "/"
+      }
+
       render json: {
         status: {
           code: 200,
-          message: "Signed up successfully.",
+          message: "Signed up successfully."
         },
         data: {
-          token: current_token,
           user: UserSerializer.new(resource).serializable_hash[:data][:attributes]
         }
       }, status: :ok
