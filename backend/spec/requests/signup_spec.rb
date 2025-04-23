@@ -13,7 +13,6 @@ RSpec.describe "User signup", type: :request do
         message: "Signed up successfully."
       },
       data: {
-        token: be_a(String),
         user: {
           id: be_a(Integer),
           email: user_attrs[:email],

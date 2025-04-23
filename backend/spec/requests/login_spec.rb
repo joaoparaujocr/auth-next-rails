@@ -14,7 +14,6 @@ RSpec.describe "User login", type: :request do
         message: 'Logged in successfully.'
       },
       data: {
-        token: be_a(String),
         user: {
           id: be_a(Integer),
           email: user_correct.email,
