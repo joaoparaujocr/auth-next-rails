@@ -10,9 +10,9 @@ class Users::RegistrationsController < Devise::RegistrationsController
       cookies[:token] = {
         value: current_token,
         httponly: true,
-        secure: Rails.env.production?,
-        same_site: :lax,
-        path: "/"
+        secure: true,
+        same_site: :none,
+        expires: 1.week.from_now
       }
 
       render json: {

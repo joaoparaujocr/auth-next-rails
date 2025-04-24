@@ -3,11 +3,11 @@ module CurrentUserHelper
   include ActionController::Cookies
 
   def current_user
-    token = cookies[:token]
+    token = cookies[:token] || (request.headers["Authorization"] && request.headers["Authorization"].split(" ").last)
 
     return unless token
 
-    jwt_payload = JWT.decode(token, ENV["DEVISE_JWT_SECRET_KEY"], true, algorithm: 'HS256').first
+    jwt_payload = JWT.decode(token, ENV["DEVISE_JWT_SECRET_KEY"], true, algorithm: "HS256").first
     @current_user ||= User.find(jwt_payload["sub"].to_i)
   rescue JWT::DecodeError
     nil

@@ -12,12 +12,12 @@ class Users::SessionsController < Devise::SessionsController
     headers["Authorization"] = @token
 
     cookies[:token] = {
-        value: @token,
-        httponly: true,
-        secure: Rails.env.production?,
-        same_site: :lax,
-        path: "/"
-      }
+      value: @token,
+      httponly: true,
+      secure: true,
+      same_site: :none,
+      expires: 1.week.from_now
+    }
 
     render json: {
       status: {
@@ -30,6 +30,7 @@ class Users::SessionsController < Devise::SessionsController
   end
 
   def respond_to_on_destroy
+    puts "TEFEFEFEFEFEF"
     if current_user
       cookies.delete(:token)
 
